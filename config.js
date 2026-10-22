@@ -6,7 +6,7 @@
 //    Colle entre les guillemets l'URL du projet et la clé publique
 //    ("anon public" ou "publishable"). Voir le README, étape A.
 //    Exemple : const CONFIG={url:"https://abcd1234.supabase.co",key:"eyJ..."};
-const CONFIG={url:"",key:""};
+const CONFIG={url:"https://celdzkctpbqlnqqhxssu.supabase.co/rest/v1/",key:"sb_publishable_bc4LKFK5mDPQCu-2vzxKsw_42MZSna7"};
 
 // 2) TES COORDONNÉES
 //    wa     = ton numéro WhatsApp avec l'indicatif, sans le +
