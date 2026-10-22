@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#25d366">
+<title>Contacts Exchange — Get more WhatsApp views</title>
+<meta name="description" content="Join, share and get more WhatsApp views. Plus de vues WhatsApp.">
+<!-- LINK PREVIEW (WhatsApp, Facebook, Telegram…): replace VOTRE-LIEN below by your real site address
+     (e.g. mon-site.netlify.app) in the 2 places, and upload og-image.jpg next to index.html -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Contacts Exchange">
+<meta property="og:title" content="Get more WhatsApp views · Plus de vues WhatsApp">
+<meta property="og:description" content="Join the contacts exchange, invite your friends and unlock the VCF file together.">
+<meta property="og:url" content="https://VOTRE-LIEN/">
+<meta property="og:image" content="https://VOTRE-LIEN/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!--
+GO LIVE: 1) run supabase-setup.sql in Supabase (SQL Editor, after changing the admin password in it)
+         2) paste Project URL + anon key in CONFIG below  3) host this file (Netlify / Vercel / GitHub Pages).
+Without CONFIG the page runs in demo mode (data stays on the device, admin password: admin).
+-->
+<style>
+:root{--bg:#f0f2f5;--card:#fff;--tx:#111b21;--mu:#667781;--br:#d1d7db;--gr:#25d366;--nb:#e7fce3;--rd:#e5484d}
+@media(prefers-color-scheme:dark){:root{--bg:#0b141a;--card:#111b21;--tx:#e9edef;--mu:#8696a0;--br:#2a3942;--nb:#0d2e22}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+.top{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--br);padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.top-in{max-width:440px;margin:0 auto}
+.top-msg{display:flex;gap:8px;font-size:13px;font-weight:600;line-height:1.3;margin-bottom:8px}
+.bar{height:12px;background:var(--bg);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#25d366,#128c7e);transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.top.open .bar i{background:linear-gradient(90deg,#25d366,#a3e635);animation:gl 1.4s infinite alternate}
+@keyframes gl{to{opacity:.65}}
+.top-n{display:flex;justify-content:space-between;font-size:12px;color:var(--mu);margin-top:5px}
+.wrap{max-width:440px;margin:0 auto;padding:14px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.logo{font-weight:700;font-size:18px;color:var(--gr)}
+header select{width:auto;padding:8px}
+.card{background:var(--card);border-radius:16px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+section{animation:pop .3s}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+.shake{animation:sk .3s}
+@keyframes sk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+h1{font-size:22px;margin:0 0 6px}
+.sub{color:var(--mu);font-size:14px;margin:0 0 16px}
+.tabs{display:flex;gap:6px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:14px}
+.tabs button{flex:1;border:0;background:none;color:var(--mu);padding:9px;border-radius:8px;font:inherit;font-weight:600;cursor:pointer;transition:.2s}
+.tabs button.on{background:var(--card);color:var(--tx);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 5px}
+input,select{width:100%;padding:12px;border:1px solid var(--br);border-radius:10px;background:var(--card);color:var(--tx);font:inherit;transition:border-color .2s}
+input:focus,select:focus{outline:2px solid var(--gr);border-color:transparent}
+.bad{border-color:var(--rd)!important;outline-color:var(--rd)!important}
+.row{display:flex;gap:8px}.row select{width:44%}.row input{flex:1;min-width:0}
+.chk{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:13px;margin-top:14px}
+.chk input{width:20px;height:20px;margin:0;flex:none}
+.chk.bad{color:var(--rd)}
+.hint{font-size:13px;color:var(--mu);margin:12px 0}
+.btn{position:relative;width:100%;padding:14px;border:0;border-radius:12px;background:var(--gr);color:#06281d;font:inherit;font-weight:700;cursor:pointer;margin-top:8px;transition:transform .1s,opacity .2s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:var(--bg);color:var(--mu);cursor:not-allowed}
+.btn.alt{background:transparent;color:var(--tx);border:1.5px solid var(--br)}
+.btn.wa{background:#128c7e;color:#fff}
+.btn.ld{color:transparent!important;pointer-events:none}
+.btn.ld::after{content:"";position:absolute;inset:0;margin:auto;width:20px;height:20px;border:3px solid #0003;border-top-color:#06281d;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.err{color:var(--rd);font-size:14px;min-height:20px;margin:10px 0 0}
+.note{background:var(--nb);border-inline-start:4px solid var(--gr);border-radius:10px;padding:12px 14px;margin:14px 0;font-size:14px}
+.note p{margin:4px 0}
+.link{display:block;width:100%;background:none;border:0;color:var(--mu);text-decoration:underline;font:inherit;cursor:pointer;margin-top:14px}
+.demo{font-size:12px;color:var(--mu);text-align:center;margin-top:12px}
+.tbl{max-height:280px;overflow:auto;border:1px solid var(--br);border-radius:10px;margin-top:8px}
+.tbl .r{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;font-size:14px;border-bottom:1px solid var(--br)}
+.tbl .r:last-child{border:0}
+.tbl .r span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+:root{--g1:#19c37d;--g2:#0ea5e9;--g3:#8b5cf6;--g4:#f59e0b}
+@media(prefers-color-scheme:dark){:root{--g1:#064e3b;--g2:#0c4a6e;--g3:#3b0764;--g4:#78350f}}
+body{background:linear-gradient(135deg,var(--g1),var(--g2),var(--g3),var(--g4));background-size:300% 300%;background-attachment:fixed;animation:bgm 22s ease infinite}
+@keyframes bgm{50%{background-position:100% 100%}}
+.bb{position:fixed;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none;animation:fl 14s ease-in-out infinite}
+.bb:nth-of-type(1){width:120px;height:120px;left:5%;top:20%}
+.bb:nth-of-type(2){width:70px;height:70px;right:8%;top:42%;animation-delay:-4s}
+.bb:nth-of-type(3){width:170px;height:170px;left:58%;bottom:5%;animation-delay:-8s}
+@keyframes fl{50%{transform:translateY(-34px) scale(1.06)}}
+.wrap{position:relative;z-index:1;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.logo{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.hd{display:flex;gap:8px;align-items:center}
+.ic{border:0;background:var(--card);border-radius:10px;width:38px;height:38px;font-size:18px;cursor:pointer}
+.card{border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.22)}
+.btn:not(:disabled):not(.alt):not(.wa){background:linear-gradient(135deg,#25d366,#12b886)}
+.chk a{color:#128c7e;font-weight:700}
+.pv{display:flex;gap:8px;background:var(--nb);border-radius:10px;padding:10px 12px;font-size:13px;margin:0 0 14px}
+.tk{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:11px 14px;border-radius:14px;background:linear-gradient(90deg,#f97316,#ef4444);color:#fff;font-weight:800;font-size:14px;text-decoration:none;box-shadow:0 4px 14px rgba(239,68,68,.4);animation:pls 2.4s infinite}
+.tk span{flex:1;transition:opacity .25s,transform .25s}
+.tk span.out{opacity:0;transform:translateY(6px)}
+.tk b{background:#fff;color:#ef4444;border-radius:99px;padding:3px 10px;font-size:12px}
+@keyframes pls{50%{transform:scale(1.015)}}
+.ad{margin-top:16px;padding:22px;border-radius:18px;color:#fff;background:linear-gradient(135deg,#6d28d9,#db2777 55%,#f97316);box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.ad h2{margin:0 0 4px;font-size:21px;line-height:1.2}
+.ad .sb{margin:0 0 12px;font-size:14px;opacity:.95}
+.ad ul{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:7px}
+.ad li{background:rgba(255,255,255,.16);border-radius:10px;padding:9px 12px;font-weight:700;font-size:14px}
+.ad a.cta{display:block;text-align:center;text-decoration:none;font-weight:800;border-radius:12px;padding:14px;margin-top:8px}
+.ad a.w{background:#25d366;color:#06281d;animation:pls 2s infinite}
+.ad a.m{background:#fff;color:#6d28d9}
+.ad small{display:block;text-align:center;margin-top:10px;opacity:.92;word-break:break-all}
+.fab{position:fixed;inset-inline-end:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;width:58px;height:58px;border-radius:50%;background:#25d366;display:grid;place-items:center;font-size:28px;text-decoration:none;animation:ring 2.6s infinite}
+@keyframes ring{0%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 0 rgba(37,211,102,.7)}70%,100%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 18px rgba(37,211,102,0)}}
+.mdl{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:grid;place-items:center;padding:16px}
+.mc{position:relative;background:var(--card);border-radius:16px;max-width:460px;width:100%;max-height:85vh;overflow:auto;padding:22px}
+.mc h2{margin:0 28px 10px 0;font-size:19px}
+.mc ol{padding-inline-start:20px;margin:0 0 12px;font-size:14px}
+.mc li{margin-bottom:8px}
+.mx{position:absolute;inset-inline-end:10px;top:8px;border:0;background:none;color:var(--mu);font-size:28px;cursor:pointer}
+.ft,.wrap>.link,.demo{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.ft{text-align:center;font-size:12px;margin-top:14px}
+.del{border:0;background:none;cursor:pointer;font-size:15px}
+.tbl .r{align-items:center}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.pvw{font-size:13px;color:#128c7e;font-weight:700;min-height:18px;margin:6px 0 0}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<i class="bb"></i><i class="bb"></i><i class="bb"></i>
+<div class="top" id="top">
+  <div class="top-in">
+    <div class="top-msg"><span id="ico">🔒</span><span id="pmsg"></span></div>
+    <div class="bar" id="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i id="fill"></i></div>
+    <div class="top-n"><span><b id="cn">0</b> / <span id="gl">5,000</span></span><span id="pc">0%</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="logo">💬 Contacts Exchange</div>
+    <div class="hd"><button class="ic" id="mt" aria-label="Sound">🔊</button><select id="lg" aria-label="Language"></select></div>
+  </header>
+  <a class="tk" id="tkl" target="_blank" rel="noopener"><span id="tk"></span><b id="tkb"></b></a>
+
+  <main class="card">
+    <section id="v1">
+      <h1 data-i="t"></h1>
+      <p class="sub" data-i="sub"></p>
+      <p class="pv"><span>🔒</span><span data-i="pv"></span></p>
+      <div class="tabs"><button id="tr" data-i="reg"></button><button id="ts" data-i="sin"></button></div>
+      <label for="nm" data-i="nm"></label>
+      <input id="nm" autocomplete="name" maxlength="40">
+      <label for="ph" data-i="ph"></label>
+      <div class="row">
+        <select id="cc" aria-label="Country code"></select>
+        <input id="ph" type="tel" inputmode="tel" autocomplete="tel-national" maxlength="24" placeholder="000 000 000">
+      </div>
+      <p class="pvw" id="pvw" dir="ltr" aria-live="polite"></p>
+      <label class="chk" id="cw"><input type="checkbox" id="ck"><span><span data-i="con"></span> <a href="#" id="cl" data-i="cl"></a></span></label>
+      <p class="hint" id="hint" data-i="hint"></p>
+      <button class="btn" id="go"></button>
+      <p class="err" id="er" role="alert" aria-live="polite"></p>
+    </section>
+
+    <section id="v2" hidden>
+      <h1 id="hi"></h1>
+      <div class="note">
+        <b data-i="nt"></b>
+        <p id="cr" dir="ltr"></p>
+        <p data-i="nt2"></p>
+      </div>
+      <p class="sub" id="lk" style="font-weight:600;color:var(--tx)"></p>
+      <button class="btn" id="dl"></button>
+      <button class="btn wa" id="sh" data-i="sh"></button>
+      <p class="sub" style="margin-top:14px" id="how" data-i="how"></p>
+      <button class="link" id="out" data-i="out"></button>
+    </section>
+
+    <section id="v3" hidden>
+      <h1>🔐 Admin</h1>
+      <label for="ap">Mot de passe admin</label>
+      <input id="ap" type="password" autocomplete="current-password">
+      <button class="btn" id="al">Se connecter</button>
+      <p class="err" id="ae" role="alert"></p>
+      <button class="link" id="ab">← Retour</button>
+    </section>
+
+    <section id="v4" hidden>
+      <h1>⚙️ Espace admin</h1>
+      <div class="note"><b id="as"></b></div>
+      <label for="ag">Objectif (nombre de contacts)</label>
+      <input id="ag" type="number" min="1" inputmode="numeric">
+      <label class="chk"><input type="checkbox" id="ar"><span>Rendre le VCF téléchargeable pour tout le monde maintenant, même si l'objectif n'est pas atteint</span></label>
+      <button class="btn" id="asv">Enregistrer</button>
+      <button class="btn alt" id="adl">⬇️ Télécharger le VCF (tous les contacts)</button>
+      <button class="btn alt" id="avw">👁 Voir les contacts</button>
+      <div id="alist" hidden>
+        <input id="aq" placeholder="Rechercher un nom ou un numéro…" style="margin-top:10px">
+        <p class="sub" id="ac" style="margin:8px 0 0"></p>
+        <div class="tbl" id="tb"></div>
+      </div>
+      <p class="sub" id="am" style="margin:12px 0 0;font-weight:600"></p>
+      <button class="link" id="aout">Quitter l'espace admin</button>
+    </section>
+  </main>
+
+  <aside class="ad" id="adv">
+    <h2 data-i="ah"></h2>
+    <p class="sb" data-i="asb"></p>
+    <ul id="xl"></ul>
+    <a class="cta w" id="xw" target="_blank" rel="noopener"></a>
+    <a class="cta m" id="xm"></a>
+    <small id="xc" dir="ltr"></small>
+  </aside>
+
+  <p class="demo" id="demo" hidden>Demo mode: data stays on this device · admin password: admin · see supabase-setup.sql to go live.</p>
+  <p class="ft" id="ft" dir="ltr"></p>
+  <button class="link" id="adm" style="font-size:12px">Admin</button>
+</div>
+<a class="fab" id="fab" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+<div class="mdl" id="md" hidden role="dialog" aria-modal="true">
+  <div class="mc">
+    <button class="mx" id="mx" aria-label="Close">×</button>
+    <h2 data-i="clt"></h2>
+    <ol id="cll"></ol>
+    <p class="sub" id="cct" dir="ltr"></p>
+    <button class="btn" id="mok" data-i="ok"></button>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="translations.js"></script>
+<script src="phone.js"></script>
+<script>
+// Vérifie que tous les fichiers du site sont bien présents sur l'hébergeur
+(function(){
+  var m=[];
+  if(typeof CONFIG==="undefined"){m.push("config.js");window.CONFIG={url:"",key:""};window.OWNER={wa:"237693517598",mail:"stivofolefacknanfack@gmail.com",prefix:"S.S.O",share:""};window.PHONE_STRICT=true}
+  if(typeof L==="undefined")m.push("translations.js");
+  if(typeof libphonenumber==="undefined")m.push("phone.js");
+  if(m.length){
+    var b=document.createElement("div");
+    b.style.cssText="position:relative;z-index:99;background:#b91c1c;color:#fff;padding:12px 16px;font:600 14px system-ui;text-align:center";
+    b.textContent="⚠ Fichier(s) manquant(s) : "+m.join(", ")+" — envoie TOUS les fichiers du dossier sur ton hébergeur.";
+    document.body.insertBefore(b,document.body.firstChild);
+  }
+  if(typeof L==="undefined")throw new Error("translations.js manquant");
+})();
+</script>
+<script>
+// Short country list, only used if phone.js is missing (basic fallback)
+const C=[
+  "Cameroon:237|Nigeria:234|Ghana:233|Côte d'Ivoire:225|Senegal:221|Mali:223|",
+  "Burkina Faso:226|Benin:229|Togo:228|Niger:227|Guinea:224|Gabon:241|",
+  "Congo:242|DR Congo:243|Chad:235|Central African Rep.:236|Equatorial Guinea:240|Burundi:257|",
+  "Rwanda:250|Kenya:254|Uganda:256|Tanzania:255|Ethiopia:251|South Africa:27|",
+  "Morocco:212|Algeria:213|Tunisia:216|Egypt:20|Angola:244|Mozambique:258|",
+  "Madagascar:261|Zambia:260|Zimbabwe:263|Liberia:231|Sierra Leone:232|Gambia:220|",
+  "Mauritania:222|Djibouti:253|Comoros:269|Mauritius:230|France:33|Belgium:32|",
+  "Switzerland:41|Germany:49|United Kingdom:44|Spain:34|Italy:39|Portugal:351|",
+  "Netherlands:31|Canada:1|United States:1|Brazil:55|Mexico:52|Haiti:509|",
+  "India:91|Pakistan:92|China:86|UAE:971|Saudi Arabia:966|Turkey:90|",
+  "Lebanon:961|Russia:7"
+].join("").split("|").map(s=>{const[n,c]=s.split(":");return{n,c}});
+
+const $=i=>document.getElementById(i);
+const store={};
+const gs=k=>{try{return localStorage.getItem(k)}catch(e){return store[k]??null}};
+const ss=(k,v)=>{store[k]=v;try{localStorage.setItem(k,v)}catch(e){}};
+const rm=k=>{delete store[k];try{localStorage.removeItem(k)}catch(e){}};
+const fmt=n=>Number(n).toLocaleString("en");
+let lang=gs("lg")||"en",mode="r",sess=null,adm=null,alist=[];
+if(!L[lang])lang="en";
+try{sess=JSON.parse(gs("ss")||"null")}catch(e){}
+const T=k=>L[lang][k];
+
+// ---- Sounds (generated in the browser, soft volume, can be muted) ----
+let mute=gs("mu")=="1",AC=null;
+function snd(type){
+  if(mute)return;
+  try{
+    AC=AC||new(window.AudioContext||window.webkitAudioContext)();
+    if(AC.state=="suspended")AC.resume();
+    const q={tap:[[660,.05,0]],ok:[[523,.12,0],[659,.12,.1],[784,.22,.2]],err:[[220,.12,0],[185,.2,.13]],win:[[523,.12,0],[659,.12,.12],[784,.12,.24],[1047,.4,.36]],pop:[[880,.06,0],[1175,.09,.07]]}[type];
+    q.forEach(([f,d,t])=>{
+      const o=AC.createOscillator(),g=AC.createGain(),st=AC.currentTime+t;
+      o.type=type=="err"?"triangle":"sine";o.frequency.value=f;
+      g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(.1,st+.01);g.gain.exponentialRampToValueAtTime(.0001,st+d);
+      o.connect(g);g.connect(AC.destination);o.start(st);o.stop(st+d+.03);
+    });
+  }catch(e){}
+}
+
+// ---- Storage layer: Supabase if configured, otherwise local demo ----
+const remote=!!(CONFIG.url&&CONFIG.key);
+const loadL=()=>{try{return JSON.parse(gs("wc")||"[]")}catch(e){return[]}};
+async function api(path,body){
+  const r=await fetch(CONFIG.url+"/rest/v1/"+path,{method:"POST",headers:{apikey:CONFIG.key,"Content-Type":"application/json",...(CONFIG.key.startsWith("eyJ")?{Authorization:"Bearer "+CONFIG.key}:{})},body:JSON.stringify(body)});
+  if(r.status===409)throw"exists";
+  if(!r.ok)throw"net";
+  const t=await r.text();return t?JSON.parse(t):null;
+}
+async function status(){
+  if(remote)return await api("rpc/get_status",{});
+  const l=loadL(),g=+(gs("wg")||5000),r=gs("wr")=="1";
+  return{goal:g,count:l.length,released:r,open:r||l.length>=g};
+}
+async function register(name,phone){
+  if(remote){await api("contacts",{name,phone});return}
+  const l=loadL();if(l.some(x=>x.phone===phone))throw"exists";
+  l.push({name,phone});ss("wc",JSON.stringify(l));
+}
+async function checkUser(n,p){
+  if(remote)return await api("rpc/check_user",{p_name:n,p_phone:p});
+  return loadL().some(x=>x.phone===p&&x.name.toLowerCase()===n.toLowerCase());
+}
+async function getContacts(n,p){
+  if(remote)return(await api("rpc/get_contacts",{p_name:n,p_phone:p}))||[];
+  return(await status()).open&&await checkUser(n,p)?loadL():[];
+}
+const adminCheck=async p=>remote?await api("rpc/admin_check",{p}):p=="admin";
+const adminList=async p=>remote?(await api("rpc/admin_contacts",{p}))||[]:loadL();
+async function adminSet(p,g,r){
+  if(remote){await api("rpc/admin_set",{p,g,r});return}
+  ss("wg",String(g));ss("wr",r?"1":"0");
+}
+
+// ---- VCF ----
+const pf=n=>n.startsWith(OWNER.prefix)?n:OWNER.prefix+" "+n; // S.S.O prefix
+const esc=s=>s.replace(/[\\;,]/g,m=>"\\"+m).replace(/[\r\n]+/g," ");
+const vcf=l=>l.map(x=>"BEGIN:VCARD\r\nVERSION:3.0\r\nFN:"+esc(pf(x.name))+"\r\nN:"+esc(pf(x.name))+";;;;\r\nTEL;TYPE=CELL:"+x.phone+"\r\nEND:VCARD").join("\r\n")+"\r\n";
+function download(l,fn="contacts.vcf"){
+  const b=new Blob([vcf(l)],{type:"text/vcard;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=fn;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+
+// ---- Progress bar ----
+let S={goal:5000,count:0,released:false,open:false},shown=0,ready=false;
+function tween(a,b){const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/700);$("cn").textContent=fmt(Math.round(a+(b-a)*k));if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+function upd(s){
+  if(ready){if(s.open&&!S.open)snd("win");else if(s.count>S.count)snd("pop")}
+  S=s;
+  const pct=s.goal?Math.min(100,s.count/s.goal*100):0;
+  $("top").classList.toggle("open",!!s.open);
+  $("ico").textContent=s.open?"🎉":"🔒";
+  $("pmsg").textContent=s.open?T("po"):T("pm").replace("{g}",fmt(s.goal));
+  $("fill").style.width=(s.count>0?Math.max(pct,2):0)+"%";
+  $("bar").setAttribute("aria-valuenow",Math.round(pct));
+  $("gl").textContent=fmt(s.goal);$("pc").textContent=Math.floor(pct)+"%";
+  tween(shown,s.count);shown=s.count;
+  renderDone();renderAdmin();
+}
+async function refresh(){try{upd(await status())}catch(e){}}
+
+// ---- UI helpers ----
+$("lg").innerHTML=Object.keys(N).map(k=>`<option value="${k}">${N[k]}</option>`).join("");
+// ---- Countries & phone numbers (library = every country, exact rules per country) ----
+const LPH=()=>window.libphonenumber;
+const flag=i=>String.fromCodePoint(...[...i].map(c=>127397+c.charCodeAt(0)));
+let COUNTRIES=[];
+function buildCountries(){
+  const lp=LPH(),cur=$("cc").value||(lp?"CM":"0"); // Cameroon (+237) by default
+  if(lp){
+    let dn=null;try{dn=new Intl.DisplayNames([lang],{type:"region"})}catch(e){}
+    COUNTRIES=lp.getCountries().map(i=>{let n=i;try{n=(dn&&dn.of(i))||i}catch(e){}return{i,n,c:lp.getCountryCallingCode(i)}}).sort((a,b)=>a.n.localeCompare(b.n,lang));
+  }else COUNTRIES=C.map((x,i)=>({i:String(i),n:x.n,c:x.c}));
+  const sel=$("cc");sel.textContent="";
+  COUNTRIES.forEach(x=>sel.add(new Option((lp?flag(x.i)+" ":"")+x.n+" (+"+x.c+")",x.i)));
+  sel.value=COUNTRIES.some(x=>x.i==cur)?cur:(lp?"CM":"0");
+}
+// Returns {ok, e164, intl}. Accepts national format (0 / 8 prefixes), "+code" format, or code typed by mistake.
+function normPhone(raw,iso){
+  const lp=LPH();
+  if(lp){
+    try{
+      const pn=lp.parsePhoneNumberFromString(String(raw),iso);
+      if(pn&&(PHONE_STRICT?pn.isValid():pn.isPossible()))return{ok:true,e164:pn.number,intl:pn.formatInternational()};
+    }catch(e){}
+    return{ok:false};
+  }
+  // fallback if the library did not load: basic length check only
+  const c=(COUNTRIES.find(x=>x.i==iso)||{}).c||"";
+  let d=String(raw).replace(/\D/g,"").replace(/^0+/,"");
+  if(d.startsWith(c)&&d.length-c.length>=9)d=d.slice(c.length);
+  if(d.length<6||d.length+c.length>15)return{ok:false};
+  return{ok:true,e164:"+"+c+d,intl:"+"+c+" "+d};
+}
+function showPv(){const r=normPhone($("ph").value,$("cc").value);$("pvw").textContent=r.ok?"✓ "+r.intl:""}
+$("demo").hidden=remote;
+
+function show(n){
+  [1,2,3,4].forEach(i=>$("v"+i).hidden=i!=n);
+  $("v"+n).style.animation="none";void $("v"+n).offsetWidth;$("v"+n).style.animation="";
+  scrollTo({top:0,behavior:"smooth"});
+}
+function setMode(m){
+  mode=m;
+  $("tr").classList.toggle("on",m=="r");$("ts").classList.toggle("on",m=="s");
+  $("cw").hidden=$("hint").hidden=m!="r";
+  $("go").textContent=T(m=="r"?"goR":"goS");
+  $("er").textContent="";
+}
+function renderDone(){
+  if(!sess)return;
+  const r=Math.max(0,S.goal-S.count);
+  $("lk").textContent=S.open?T("po"):T("lk").replace("{g}",fmt(S.goal)).replace("{r}",fmt(r));
+  $("dl").disabled=!S.open;
+  $("dl").textContent=(S.open?"⬇️ ":"🔒 ")+T("dl");
+  $("how").hidden=!S.open;
+}
+function fill(){
+  $("hi").textContent=T("hi").replace("{n}",sess.name);
+  $("cr").textContent=sess.name+" · "+sess.phone;
+  renderDone();
+}
+function apply(){
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang=="ar"?"rtl":"ltr";
+  $("lg").value=lang;
+  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=T(e.dataset.i));
+  buildCountries();showPv();setMode(mode);upd(S);renderAd();renderClause();
+  if(sess)fill();
+}
+function fail(el,k){
+  snd("err");
+  $("er").textContent=T(k)+(k=="ePh"?" "+T("ePc"):"");
+  el.classList.add("bad");
+  const s=$("v1");s.classList.remove("shake");void s.offsetWidth;s.classList.add("shake");
+  if(el.focus&&el.tagName=="INPUT"&&el.type!="checkbox")el.focus();
+}
+
+// ---- Events ----
+$("lg").onchange=e=>{lang=e.target.value;ss("lg",lang);apply()};
+$("tr").onclick=()=>setMode("r");
+$("ts").onclick=()=>setMode("s");
+$("ph").oninput=e=>{
+  const el=e.target,lp=LPH(),end=el.selectionStart==el.value.length;
+  if(lp){if(end){try{el.value=new lp.AsYouType($("cc").value).input(el.value)}catch(_){}}}
+  else if(end)el.value=el.value.replace(/\D/g,"").replace(/(\d{3})(?=\d)/g,"$1 ");
+  showPv();
+};
+$("cc").onchange=()=>$("ph").dispatchEvent(new Event("input",{bubbles:true}));
+document.addEventListener("input",e=>{
+  e.target.classList.remove("bad");$("cw").classList.remove("bad");$("er").textContent="";
+});
+document.addEventListener("keydown",e=>{
+  if(e.key!="Enter"||e.target.tagName!="INPUT"||e.target.type=="checkbox")return;
+  if(e.target.id=="ap")$("al").click();else if(!$("v1").hidden)$("go").click();
+});
+
+$("go").onclick=async()=>{
+  $("er").textContent="";
+  const nm=$("nm").value.trim().replace(/\s+/g," ");
+  const r=normPhone($("ph").value,$("cc").value);
+  if(nm.length<2)return fail($("nm"),"eNm");
+  if(!r.ok)return fail($("ph"),"ePh");
+  if(mode=="r"&&!$("ck").checked){$("cw").classList.add("bad");return fail($("cw"),"eCk")}
+  const phone=r.e164,b=$("go");
+  b.classList.add("ld");b.disabled=true;
+  try{
+    if(mode=="r")await register(nm,phone);
+    else if(!(await checkUser(nm,phone)))throw"nf";
+    sess={name:nm,phone};ss("ss",JSON.stringify(sess));
+    await refresh();fill();show(2);snd("ok");
+  }catch(e){
+    if(e=="exists"){setMode("s");fail($("nm"),"eEx")}
+    else fail(e=="nf"?$("nm"):$("go"),e=="nf"?"eNf":"eNet");
+  }
+  b.classList.remove("ld");b.disabled=false;
+};
+
+$("dl").onclick=async()=>{
+  const b=$("dl");b.classList.add("ld");
+  try{const l=await getContacts(sess.name,sess.phone);if(!l.length)throw 0;download(l);snd("ok")}
+  catch(e){$("lk").textContent=T("eNet")}
+  b.classList.remove("ld");
+};
+$("sh").onclick=()=>{
+  const base=OWNER.share||(/^https?:/.test(location.protocol)?location.origin+location.pathname:location.href);
+  const u=base.split("#")[0].split("?")[0].replace(/index\.html$/,"");
+  const t=T("shT").replace("{u}","").trim()+"\n\n"+u; // link alone on its own line
+  window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank");
+};
+$("out").onclick=()=>{sess=null;rm("ss");$("ph").value="";$("ck").checked=false;setMode("s");show(1)};
+
+// ---- Admin (French) ----
+function renderAdmin(){
+  if(!adm)return;
+  const pct=S.goal?Math.floor(Math.min(100,S.count/S.goal*100)):0;
+  $("as").textContent=(S.open?"🔓 VCF téléchargeable par tous":"🔒 VCF verrouillé")+" · "+fmt(S.count)+" / "+fmt(S.goal)+" ("+pct+"%)";
+}
+function fillAdmin(){$("ag").value=S.goal;$("ar").checked=!!S.released;$("alist").hidden=true;$("am").textContent="";renderAdmin()}
+function renderList(){
+  const q=$("aq").value.trim().toLowerCase();
+  const m=alist.filter(x=>!q||x.name.toLowerCase().includes(q)||x.phone.includes(q));
+  const tb=$("tb");tb.textContent="";
+  m.slice(0,200).forEach(x=>{
+    const r=document.createElement("div");r.className="r";
+    const a=document.createElement("span");a.textContent=pf(x.name);
+    const p=document.createElement("span");p.textContent=x.phone;p.dir="ltr";
+    const d=document.createElement("button");d.textContent="🗑";d.className="del";d.title="Supprimer";
+    d.onclick=async()=>{
+      if(!confirm("Supprimer "+pf(x.name)+" ("+x.phone+") ?"))return;
+      try{await adminDelete(adm,x.phone);alist=alist.filter(y=>y.phone!==x.phone);renderList();await refresh();$("am").textContent="✅ Contact supprimé"}
+      catch(e){$("am").textContent="❌ Suppression impossible."}
+    };
+    r.append(a,p,d);tb.append(r);
+  });
+  $("ac").textContent=m.length+" / "+alist.length+" contacts"+(m.length>200?" (200 premiers affichés, utilisez la recherche)":"");
+}
+$("adm").onclick=()=>{if(adm){fillAdmin();show(4)}else show(3)};
+$("ab").onclick=()=>show(sess?2:1);
+$("aout").onclick=()=>{adm=null;show(sess?2:1)};
+$("al").onclick=async()=>{
+  const p=$("ap").value;if(!p)return;
+  const b=$("al");b.classList.add("ld");$("ae").textContent="";
+  try{if(!(await adminCheck(p)))throw"bad";adm=p;$("ap").value="";await refresh();fillAdmin();show(4)}
+  catch(e){$("ae").textContent=e=="bad"?"Mot de passe incorrect.":"Problème de connexion."}
+  b.classList.remove("ld");
+};
+$("asv").onclick=async()=>{
+  const g=parseInt($("ag").value,10),b=$("asv");
+  if(!(g>0))return $("am").textContent="Objectif invalide.";
+  b.classList.add("ld");
+  try{await adminSet(adm,g,$("ar").checked);await refresh();$("am").textContent="✅ Enregistré"}
+  catch(e){$("am").textContent="❌ Échec de l'enregistrement."}
+  b.classList.remove("ld");
+};
+$("adl").onclick=async()=>{
+  const b=$("adl");b.classList.add("ld");
+  try{const l=await adminList(adm);if(!l.length)$("am").textContent="Aucun contact pour le moment.";else{download(l,"contacts-admin.vcf");$("am").textContent="✅ "+l.length+" contacts téléchargés"}}
+  catch(e){$("am").textContent="❌ Échec du téléchargement."}
+  b.classList.remove("ld");
+};
+$("avw").onclick=async()=>{
+  const b=$("avw");b.classList.add("ld");
+  try{alist=await adminList(adm);$("alist").hidden=false;renderList()}
+  catch(e){$("am").textContent="❌ Impossible de charger les contacts."}
+  b.classList.remove("ld");
+};
+$("aq").oninput=renderList;
+
+// ---- Advert (ticker + card + floating button) ----
+let ai=0;
+const wa=m=>"https://wa.me/"+OWNER.wa+"?text="+encodeURIComponent(m);
+function tick(){
+  $("tk").textContent=AE[ai]+" "+T("ad")[ai];
+  $("tkl").href=wa(T("aq")+T("ad")[ai]);
+}
+function renderAd(){
+  const ul=$("xl");ul.textContent="";
+  T("ad").forEach((t,i)=>{const li=document.createElement("li");li.textContent=AE[i]+" "+t;ul.append(li)});
+  const link=wa(T("aq"));
+  $("xw").textContent=T("aw");$("xw").href=link;
+  $("xm").textContent=T("ae");$("xm").href="mailto:"+OWNER.mail+"?subject="+encodeURIComponent("Contacts Exchange")+"&body="+encodeURIComponent(T("aq"));
+  $("xc").textContent="wa.me/"+OWNER.wa+" · "+OWNER.mail;
+  $("fab").href=link;$("tkb").textContent="WhatsApp";
+  $("ft").textContent="WhatsApp +"+OWNER.wa+" · "+OWNER.mail;
+  tick();
+}
+setInterval(()=>{
+  const e=$("tk");e.classList.add("out");
+  setTimeout(()=>{ai=(ai+1)%AE.length;tick();e.classList.remove("out")},250);
+},3500);
+
+// ---- Privacy clause ----
+function renderClause(){
+  const ol=$("cll");ol.textContent="";
+  T("cp").forEach(t=>{const li=document.createElement("li");li.textContent=t;ol.append(li)});
+  $("cct").textContent="WhatsApp +"+OWNER.wa+" · "+OWNER.mail;
+}
+$("cl").onclick=e=>{e.preventDefault();$("md").hidden=false};
+$("mx").onclick=()=>{$("md").hidden=true};
+$("md").onclick=e=>{if(e.target.id=="md")$("md").hidden=true};
+$("mok").onclick=()=>{$("ck").checked=true;$("cw").classList.remove("bad");$("er").textContent="";$("md").hidden=true};
+
+// ---- Sound toggle + tap sound ----
+$("mt").textContent=mute?"🔇":"🔊";
+$("mt").onclick=()=>{mute=!mute;ss("mu",mute?"1":"0");$("mt").textContent=mute?"🔇":"🔊";snd("tap")};
+document.addEventListener("click",e=>{if(e.target.closest("button:not(#mt)"))snd("tap")});
+
+// ---- Admin: delete a contact (privacy requests) ----
+async function adminDelete(p,ph){
+  if(remote){await api("rpc/admin_delete",{p,p_phone:ph});return}
+  ss("wc",JSON.stringify(loadL().filter(x=>x.phone!==ph)));
+}
+
+// ---- Start ----
+apply();
+if(sess){fill();show(2)}else show(1);
+refresh().then(()=>{ready=true});
+setInterval(refresh,10000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh()});
+</script>
+</body>
+</html>
