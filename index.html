@@ -293,7 +293,8 @@ function snd(type){
 const remote=!!(CONFIG.url&&CONFIG.key);
 const loadL=()=>{try{return JSON.parse(gs("wc")||"[]")}catch(e){return[]}};
 async function api(path,body){
-  const r=await fetch(CONFIG.url+"/rest/v1/"+path,{method:"POST",headers:{apikey:CONFIG.key,"Content-Type":"application/json",...(CONFIG.key.startsWith("eyJ")?{Authorization:"Bearer "+CONFIG.key}:{})},body:JSON.stringify(body)});
+    const base=CONFIG.url.trim().replace(/\/+$/,"").replace(/\/rest\/v1$/,"");
+  const r=await fetch(base+"/rest/v1/"+path,{method:"POST",headers:{apikey:CONFIG.key,"Content-Type":"application/json",...(CONFIG.key.startsWith("eyJ")?{Authorization:"Bearer "+CONFIG.key}:{})},body:JSON.stringify(body)});
   if(r.status===409)throw"exists";
   if(!r.ok)throw"net";
   const t=await r.text();return t?JSON.parse(t):null;
